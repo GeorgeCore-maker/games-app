@@ -179,7 +179,7 @@ de sobra para un chiste por visita. La traducción ocurre **dentro** de
       `main.tsx` + `pages/`. Se pueden borrar.
 - [ ] No hay tests configurados.
 - [ ] No hay `LICENSE`. El repo es público, así que conviene decidirla.
-- [ ] El `README` original de la plantilla de Vite fue sustituido por este.
+- [x] El `README` original de la plantilla de Vite fue sustituido por este.
 
 ## Créditos
 
