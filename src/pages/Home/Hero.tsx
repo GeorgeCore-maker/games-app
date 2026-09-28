@@ -9,8 +9,10 @@ import {
     Skeleton,
 } from '@chakra-ui/react';
 import useChuck from './useChuck';
+import { useNavigate } from 'react-router-dom';
 
 export default function Hero() {
+    const navigate = useNavigate();
     const { data: joke, isPending } = useChuck();
     return (
         <Flex
@@ -56,6 +58,7 @@ export default function Hero() {
                             <Skeleton
                                 width={{ base: '70%', md: '80%' }}
                                 height={'1.4em'}
+                                mx={'auto'}
                                 mt={3}
                                 rounded={'md'}
                                 startColor={'whiteAlpha.300'}
@@ -79,7 +82,9 @@ export default function Hero() {
                             px={6}
                             _hover={{
                                 bg: 'green.500',
-                            }}>
+                            }}
+                            onClick={() => navigate('/games')}
+                        >
                             Empieza a buscar
                         </Button>
                     </Stack>
