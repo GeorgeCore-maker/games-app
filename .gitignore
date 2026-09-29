@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Variables de entorno: .env.local ya lo cubria *.local, pero .env y
+# .env.production no. Sube la plantilla .env.example en su lugar.
+.env
+.env.*
+!.env.example
+
+# Cloudflare Wrangler
+.wrangler/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
