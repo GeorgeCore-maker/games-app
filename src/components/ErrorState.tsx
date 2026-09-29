@@ -13,27 +13,19 @@ import {
 import { getErrorMessage } from '../lib/errors';
 
 type Props = {
-  /** Titulo corto: "No pudimos cargar los juegos". */
   title?: string;
-  /** Texto a mostrar. Si no se pasa, se deriva del error. */
+  /** Si no se pasa, se deriva del error. */
   description?: string;
-  /** Error original, solo para extraer el mensaje. */
   error?: unknown;
-  /** Texto a continuacion. Util cuando el fallo tiene una causa concreta. */
   hint?: ReactNode;
   onRetry?: () => void;
   isRetrying?: boolean;
-  /** Texto del boton. Por defecto "Reintentar". */
   actionLabel?: string;
-  /** Ocupa toda la altura de la pantalla, en vez de ser una caja compacta. */
+  /** Ocupa toda la altura de la pantalla en vez de ser una caja compacta. */
   full?: boolean;
 };
 
-/**
- * Estado de error unico para toda la app, para que un fallo se vea siempre
- * igual. Se apoya en Alert de Chakra, con fondo semitransparente porque el
- * body ya es transparente y la foto global queda detras.
- */
+/** Fondo semitransparente porque el body es transparente y se ve la foto. */
 export default function ErrorState({
   title = 'Algo no ha ido bien',
   description,

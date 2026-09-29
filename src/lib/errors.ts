@@ -4,11 +4,7 @@ const OFFLINE =
   'No se pudo conectar con el servidor. Revisa tu conexion a internet e intentalo de nuevo.';
 const UNKNOWN = 'Ha ocurrido un error inesperado. Intentalo de nuevo en un momento.';
 
-/**
- * Devuelve el codigo HTTP si el error viene de axios con respuesta.
- * Si no hay respuesta (DNS, CORS, timeout, red caida) devuelve undefined, que
- * es justo el caso en el que conviene ofrecer "reintentar".
- */
+/** Sin respuesta (DNS, CORS, timeout, red caida) devuelve undefined. */
 export function getErrorStatus(error: unknown): number | undefined {
   if (axios.isAxiosError(error)) {
     return error.response?.status;
@@ -16,17 +12,13 @@ export function getErrorStatus(error: unknown): number | undefined {
   return undefined;
 }
 
-/** Un 404 solo merece pantalla de "no encontrado" si viene de una ruta. */
 export function isNotFound(error: unknown): boolean {
   return getErrorStatus(error) === 404;
 }
 
 /**
- * Convierte cualquier error en un mensaje que se pueda enseñar al usuario.
- *
- * No devuelve `error.message` a proposito: en produccion eso filtra nombres
- * de hosts, rutas internas y textos de error ajenos. Para diagnostico, el
- * error original sigue en el log de la consola y en el estado de react-query.
+ * No devuelve `error.message` a proposito: en produccion filtra hosts y rutas
+ * internas. Para diagnostico, el error original sigue en react-query.
  */
 export function getErrorMessage(error: unknown, fallback: string = UNKNOWN): string {
   if (axios.isAxiosError(error)) {
@@ -51,13 +43,12 @@ export function getErrorMessage(error: unknown, fallback: string = UNKNOWN): str
     return OFFLINE;
   }
 
-  // response.json() sobre algo que no es JSON. Es el fallo tipico cuando el
-  // proxy de Steam no existe en produccion y responde con el index.html.
+  // json() sobre HTML: tipico cuando el proxy de Steam no responde.
   if (error instanceof SyntaxError) {
     return 'La respuesta del servidor no se pudo interpretar.';
   }
 
-  // fetch() lanza TypeError cuando no hay red o CORS bloquea la respuesta.
+  // fetch() lanza TypeError sin red o con CORS bloqueado.
   if (error instanceof TypeError) return OFFLINE;
 
   return fallback;

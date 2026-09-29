@@ -5,11 +5,8 @@ type Props = {
   size?: 'sm' | 'md';
 };
 
-/**
- * Mando compatible segun Steam. Ojo: Steam solo lo declara en parte de los
- * juegos (a The Witcher 3 y a CS2 les falta el dato), asi que la ausencia del
- * badge no significa que el juego no tenga soporte de mando.
- */
+/** El dato de Steam esta incompleto (a The Witcher 3 y CS2 les falta), asi que
+ *  la ausencia del badge no significa que el juego no tenga mando. */
 export default function ControllerBadge({ size = 'sm' }: Props) {
   return (
     <Badge

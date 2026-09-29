@@ -43,8 +43,7 @@ for (const [pct, esperado] of casos) {
 }
 
 console.log('\n=== ¿aparece alguna vez el nivel "fuego"? ===\n');
-// Medido: hay descuentos de 100, 95, 93, 92... en 720 ofertas. Si el umbral
-// fuera 70 y no hubiera ninguno, el badge seria decoracion muerta.
+// Medido en 720 ofertas: hay 100, 95, 93, 90%, asi que el nivel "fuego" se ve.
 for (const p of [100, 95, 90, 85, 80, 75, 70]) {
   check(`${p}% activa el icono de fuego`, discountTier(p) === 'fuego');
 }

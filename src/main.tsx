@@ -11,16 +11,14 @@ import AppErrorBoundary from './components/AppErrorBoundary.tsx'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Por defecto react-query reintenta 3 veces ante cualquier fallo, incluso
-      // ante un 400 que no se va a arreglar por insistir. Solo se reintenta si
-      // el error es transitorio (5xx o red caida) y como mucho 2 veces.
+  // Solo se reintenta si el error es transitorio (5xx o red caida): ante un 400
+  // insistir no lo arregla.
       retry: (failureCount, error) => {
         const status = (error as { response?: { status?: number } })?.response?.status;
         if (status !== undefined && status >= 400 && status < 500) return false;
         return failureCount < 2;
       },
-      // 5 minutos: los precios de las ofertas cambian poco en ese rato, y evita
-      // volver a pedir 60 juegos en cada cambio de filtro.
+  // Evita volver a pedir 60 juegos en cada cambio de filtro.
       staleTime: 1000 * 60 * 5,
     },
   },

@@ -5,12 +5,9 @@ type Deal = {
 };
 
 /**
- * Porcentaje de descuento de una oferta.
- *
- * `savings` viene de CheapShark como porcentaje con decimales ("10.001667"
- * = 10%), NO como fraccion. Se medio contra la API para no suponerlo.
- * Si `savings` viene a 0 pero los precios si difieren, se calcula: hay ofertas
- * marcadas como isOnSale con savings a 0.
+ * `savings` es porcentaje con decimales ("10.001667" = 10%), no fraccion. Si
+ * viene a 0 pero los precios difieren, se recalcula: hay ofertas con isOnSale
+ * y savings a 0.
  */
 export function discountPercent(deal: Deal): number {
     const savings = Number(deal.savings);
@@ -37,11 +34,7 @@ const UMBRALES: Array<{ desde: number; tier: DiscountTier }> = [
     { desde: 1, tier: 'sin' },
 ];
 
-/**
- * Los umbrales estan calibrados con los descuentos que existen de verdad: se
- * llego a ver un 100%, y hay repartidos en 75-89, 50-74 y 25-49. Un umbral de
- * "fuego" a 70% si es muestra alguna vez.
- */
+/** Umbrales calibrados con la API: hay descuentos de 100, 95, 93, 90%. */
 export function discountTier(porcentaje: number): DiscountTier {
     const encontrado = UMBRALES.find((u) => porcentaje >= u.desde);
     return encontrado ? encontrado.tier : 'sin';

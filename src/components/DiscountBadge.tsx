@@ -7,8 +7,7 @@ type Props = {
   size?: 'sm' | 'md';
 };
 
-// Un color por escalon: el descuento grande tiene que saltar a la vista de
-// un vistazo, que es justo para lo que sirve una etiqueta de oferta.
+// Un color por escalon: el descuento grande tiene que saltar a la vista.
 const ESTILOS: Record<DiscountTier, { bg: string; color: string }> = {
   fuego: { bg: 'red.500', color: 'white' },
   alta: { bg: 'orange.400', color: 'gray.900' },

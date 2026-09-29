@@ -1,13 +1,12 @@
-/* Transicion entre tema claro y oscuro.
-   El atributo data-color-mode-ready lo anade useEnableColorModeTransition tras
-   el primer montaje, para que la carga inicial no anime el fondo. */
+/* data-color-mode-ready lo anade useEnableColorModeTransition tras el primer
+   montaje, para que la carga inicial no anime el fondo. */
 html[data-color-mode-ready] body,
 html[data-color-mode-ready] body.chakra-ui-light,
 html[data-color-mode-ready] body.chakra-ui-dark {
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
-/* El velo del fondo cambia de color con el tema y tambien debe animar. */
+/* El velo del fondo cambia de color con el tema. */
 html[data-color-mode-ready] .site-background-scrim {
     transition: background-color 0.3s ease-in-out;
 }

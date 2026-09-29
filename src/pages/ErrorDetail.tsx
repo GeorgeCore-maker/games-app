@@ -7,9 +7,8 @@ const ErrorDetail = () => {
 
   const goHome = () => navigate('/');
 
-  // react-router da un objeto de respuesta para errores de ruta (404, 500) y
-  // una excepcion normal para cualquier otro fallo. Antes los dos casos
-  // terminaban en "Unknown Error", sin decir nada ni al usuario ni en consola.
+// react-router da un objeto de respuesta en errores de ruta (404, 500) y una
+// excepcion normal en el resto; antes ambos acababan en "Unknown Error".
   if (isRouteErrorResponse(error)) {
     const isNotFound = error.status === 404;
 

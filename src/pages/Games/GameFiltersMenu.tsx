@@ -95,8 +95,7 @@ export default function GameFiltersMenu() {
               {storesPending ? (
                 <Skeleton height={'32px'} rounded={'md'} />
               ) : storesError ? (
-                // Antes este caso caia en el Skeleton de arriba para siempre,
-                // porque `!stores` era cierto y no habia ninguna salida.
+// Sin esto, `!stores` caia en el Skeleton de arriba para siempre.
                 <Box>
                   <Select size={'sm'} isDisabled value={''}>
                     <option value={''}>Tiendas no disponibles</option>

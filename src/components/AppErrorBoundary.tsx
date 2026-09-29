@@ -10,11 +10,8 @@ type State = {
   error: Error | null;
 };
 
-/**
- * Ultima linea de defensa: si un componente revienta al renderizar, React
- * desmonta el arbol entero y sin esto el usuario se queda con pantalla en
- * blanco. Los errores de red los cubre react-query; esto cubre los crashes.
- */
+/** Si un componente revienta al renderizar, React desmonta el arbol y sin esto
+ *  el usuario se queda con pantalla en blanco. react-query cubre la red. */
 export default class AppErrorBoundary extends Component<Props, State> {
   state: State = { error: null };
 
@@ -23,7 +20,7 @@ export default class AppErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // Aqui si se puede dejar el error real: es para consola, no para pantalla.
+    // Aqui si se deja el error real: va a la consola, no a la pantalla.
     console.error('[AppErrorBoundary] fallo al renderizar:', error, info.componentStack);
   }
 

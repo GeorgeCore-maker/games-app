@@ -69,11 +69,8 @@ export default function useGames(page: number, pageSize: number, filters: GameFi
                     pageSize,
                     upperPrice: UPPER_PRICE,
                     sortBy: filters.sortBy,
-                    // Ojo: no se manda `desc`. Medido contra la API, sortBy ya
-                    // devuelve el orden que quiere cada opcion (Savings de mayor
-                    // a menor, Price de menor a mayor, Title de A a Z) y mandar
-                    // desc=1 lo invierte: "Mayor descuento" salia con 0%, 0%,
-                    // 0%... desc=0 es identico a no mandarlo.
+  // No se manda `desc`: la API ya devuelve cada opcion en su orden
+  // y desc=1 lo invierte ("Mayor descuento" salia con 0%, 0%, 0%).
                     ...(filters.title.trim() ? { title: filters.title.trim() } : {}),
                     ...(filters.storeID !== null ? { storeID: filters.storeID } : {}),
                     ...(filters.onSale ? { onSale: 1 } : {}),

@@ -48,9 +48,8 @@ async function main() {
   check('ninguna de Steam se queda sin imagen', okPrimero + okAlguna + placeholders === steam.length);
 
   console.log('\n=== Todas las tiendas, sin ordenar por Savings ===\n');
-  // Importante: con sortBy=Savings la cabecera la ocupan juegos de Steam y el
-  // 100% tiene header.jpg, asi que ese caso NO ejercita la reserva. Sin
-  // ordenar, la mayoria son de otras tiendas y aqui si se nota la diferencia.
+// Sin sortBy la mayoria son de otras tiendas, que es lo que ejercita la
+// reserva. Con sortBy=Savings manda Steam y casi todas tienen header.jpg.
   const todas = (await pagina('pageNumber=0&pageSize=60&upperPrice=15')).slice(0, 30);
   let conSteam = 0, soloThumb = 0, sinNada = 0;
   for (const g of todas) {

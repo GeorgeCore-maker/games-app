@@ -77,8 +77,7 @@ export default function Hero() {
                                 startColor={'whiteAlpha.300'}
                                 endColor={'whiteAlpha.700'} />
                         ) : isJokeError ? (
-                            // Sin esto el texto se corta en "...cuentamos chistes:"
-                            // y la frase queda a medias sin dar ninguna pista.
+// Sin esto el texto se corta en "...cuentamos chistes:" y queda a medias.
                             <Text
                                 as={'span'}
                                 color={'whiteAlpha.700'}

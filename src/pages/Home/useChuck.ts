@@ -14,10 +14,8 @@ type TranslationResponse = {
 };
 
 /**
- * MyMemory es un servicio gratuito con limite de peticiones. Cuando se pasa de
- * cuota devuelve el texto original o un cuerpo vacio, y `translatedText` deja
- * de existir: acceder a mano a esa propiedad rompia con TypeError y hacia
- * fallar el chiste entero aunque ya se hubiera traído bien.
+ * MyMemory tiene limite de peticiones y al pasarse devuelve `translatedText`
+ * ausente. Mirar esa propiedad a mano rompia con TypeError.
  */
 const translateToSpanish = async (text: string) => {
     const response = await fetch(
@@ -25,7 +23,7 @@ const translateToSpanish = async (text: string) => {
     );
 
     if (!response.ok) {
-        // Se devuelve el original: mejor un chiste en ingles que ningun chiste.
+        // Mejor un chiste en ingles que ningun chiste.
         return text;
     }
 
@@ -52,8 +50,7 @@ export default function useChuck() {
     return useQuery({
         queryKey: ["chuck-joke"],
         queryFn: fetchSpanishJoke,
-        // El chiste es decorativo: si falla, no tiene sentido reintentar ni
-        // dejar la pantalla bloqueada esperando.
+  // Decorativo: si falla, no se reintenta ni se bloquea la pantalla.
         retry: 1,
     });
 }
