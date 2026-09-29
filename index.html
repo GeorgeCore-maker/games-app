@@ -1,10 +1,43 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game sale</title>
+    <!-- Fuentes: Chakra Petch para titulos (angular, de las que parecen "panel
+         de control" sin caer en el topico de Orbitron) e Inter para texto, que
+         se lee mejor en parrafos largos. Las dos son OFL, gratis. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <script>
+      // Aplica el color mode antes de que React monte, para que la pagina no
+      // arranque en blanco y luego salte al tema. Respeta el mismo orden de
+      // precedencia que Chakra: lo guardado en localStorage manda sobre el
+      // tema del sistema, y el sistema solo decide si no hay nada guardado.
+      (function () {
+        try {
+          var stored = localStorage.getItem('chakra-ui-color-mode');
+          var mode;
+          if (stored === 'dark' || stored === 'light') {
+            mode = stored;
+          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            mode = 'dark';
+          } else {
+            mode = 'light';
+          }
+          var root = document.documentElement;
+          root.style.backgroundColor = mode === 'dark' ? '#1A202C' : '#FFFFFF';
+          root.style.colorScheme = mode;
+        } catch (e) {
+          /* localStorage o matchMedia no disponibles: se queda el tema claro */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

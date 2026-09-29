@@ -12,6 +12,8 @@ import {
 } from '@chakra-ui/react';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
+import GameFiltersMenu from './Games/GameFiltersMenu';
+import ColorModeToggle from '../components/ColorModeToggle';
 
 type Link = {
     uri: string;
@@ -21,9 +23,6 @@ type Link = {
 const Links: Link[] = [{
     uri: "/",
     label: "Inicio"
-}, {
-    uri: "/games",
-    label: "Juegos"
 }];
 
 const NavLink = ({ children, to }: { children: ReactNode, to: string }) => (
@@ -47,7 +46,15 @@ export default function Navbar({ children }: { children?: ReactNode }) {
 
     return (
         <>
-            <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+            <Box
+                bg={useColorModeValue('whiteAlpha.700', 'blackAlpha.700')}
+                backdropFilter={'blur(6px)'}
+                px={4}
+                position={'sticky'}
+                top={0}
+                zIndex={'banner'}
+                transition={'background-color 0.3s ease-in-out'}
+                boxShadow={'sm'}>
                 <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
                     <IconButton
                         size={'md'}
@@ -65,8 +72,10 @@ export default function Navbar({ children }: { children?: ReactNode }) {
                             {Links.map((link) => (
                                 <NavLink to={link.uri} key={link.uri}>{link.label}</NavLink>
                             ))}
+                            <GameFiltersMenu />
                         </HStack>
                     </HStack>
+                    <ColorModeToggle />
                 </Flex>
 
                 {isOpen ? (
@@ -75,6 +84,7 @@ export default function Navbar({ children }: { children?: ReactNode }) {
                             {Links.map((link) => (
                                 <NavLink to={link.uri} key={link.uri}>{link.label}</NavLink>
                             ))}
+                            <GameFiltersMenu />
                         </Stack>
                     </Box>
                 ) : null}

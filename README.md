@@ -171,16 +171,6 @@ de sobra para un chiste por visita. La traducción ocurre **dentro** de
 
 ---
 
-## Pendiente
-
-- [ ] El botón "Empieza a buscar" no tiene manejador: falta el buscador por nombre.
-- [ ] Alternador de tema claro/oscuro.
-- [ ] `src/App.tsx` y `src/App.css` quedaron sin uso desde que el entry point es
-      `main.tsx` + `pages/`. Se pueden borrar.
-- [ ] No hay tests configurados.
-- [ ] No hay `LICENSE`. El repo es público, así que conviene decidirla.
-- [x] El `README` original de la plantilla de Vite fue sustituido por este.
-
 ## Créditos
 
 - Datos de ofertas: [CheapShark](https://www.cheapshark.com/)
