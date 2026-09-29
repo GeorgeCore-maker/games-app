@@ -12,6 +12,9 @@ import {
 import { useSearchParams } from "react-router-dom";
 import ErrorState from "../../components/ErrorState";
 import GameCard from "./GameCard";
+import GenreFilterBar from "./GenreFilterBar";
+import usePageDetails from "./usePageDetails";
+import { collectGenres, matchesGenres, mergeGenreOptions, toggleGenre } from "./genreFilter";
 import useGames, { PAGE_SIZE_OPTIONS, totalPagesFor } from "./useGames";
 import {
   DEFAULT_FILTERS,
@@ -44,6 +47,36 @@ function Games() {
   // Sin esta lista, un fallo de red dejaba la rejilla vacia y sin texto: se
   // confundia con "no hay resultados".
   const games = data?.games ?? [];
+  const pageDetails = usePageDetails(games);
+  const isGenrePending = games.length > 0 && pageDetails.size < games.length;
+
+  // Los generos vienen de Steam, no de CheapShark: el filtro se aplica sobre la
+  // pagina ya cargada, asi que la paginacion sigue siendo la de la API.
+  const genreOptions = mergeGenreOptions(
+    collectGenres(
+      games
+        .map((game) => pageDetails.get(game.steamAppID))
+        .filter((details): details is NonNullable<typeof details> => Boolean(details))
+    ),
+    filters.genres
+  );
+  const visibleGames = games.filter((game) =>
+    matchesGenres(pageDetails.get(game.steamAppID)?.genres, filters.genres)
+  );
+  const isFilteringGenres = filters.genres.length > 0;
+  const hasGenreFilterWithoutMatch =
+    isFilteringGenres && visibleGames.length === 0 && games.length > 0;
+
+  const setGenres = (genres: string[]) => {
+    const next = new URLSearchParams(searchParams);
+    if (genres.length) {
+      next.set("genres", genres.join(","));
+    } else {
+      next.delete("genres");
+    }
+    setSearchParams(next);
+  };
+
   const isFirstPage = page === 0;
   const isLastPage = page + 1 >= totalPages;
   const isFiltered = !isDefaultFilters(filters);
@@ -83,6 +116,32 @@ function Games() {
           : "Prueba a cambiar los filtros del menu superior."}
       </Text>
     </Box>
+  ) : hasGenreFilterWithoutMatch ? (
+    <Box
+      gridColumn={{ base: "span 2", md: "span 3" }}
+      textAlign={"center"}
+      py={16}>
+      <Text fontSize={"lg"} fontWeight={600}>
+        Ninguna oferta de esta pagina es de{" "}
+        <Text as={"span"} color={"green.500"}>
+          {filters.genres.join(" / ")}
+        </Text>
+      </Text>
+      <Text fontSize={"sm"} color={mutedColor} mt={1}>
+        CheapShark no permite filtrar por genero en el servidor, asi que el
+        filtro se aplica a la pagina {page + 1}. Prueba con otra pagina o quita
+        el filtro.
+      </Text>
+    </Box>
+  ) : isFilteringGenres ? (
+    visibleGames.map((game) => (
+      <GameCard
+        key={game.dealID}
+        game={game}
+        selectedGenres={filters.genres}
+        onGenreToggle={(genre) => setGenres(toggleGenre(filters.genres, genre))}
+      />
+    ))
   ) : (
     games.map((game) => <GameCard key={game.dealID} game={game} />)
   );
@@ -127,6 +186,20 @@ function Games() {
           <Text as={"span"} fontWeight={700} color={strongColor}>
             &quot;{filters.title}&quot;
           </Text>
+        </Text>
+      ) : null}
+
+      <GenreFilterBar
+        options={genreOptions}
+        selected={filters.genres}
+        isPending={isGenrePending}
+        onToggle={(genre) => setGenres(toggleGenre(filters.genres, genre))}
+        onClear={() => setGenres([])}
+      />
+
+      {isFilteringGenres && visibleGames.length > 0 ? (
+        <Text px={"20px"} pt={"2px"} fontSize={"sm"} color={mutedColor}>
+          {visibleGames.length} de {games.length} ofertas de esta pagina
         </Text>
       ) : null}
 

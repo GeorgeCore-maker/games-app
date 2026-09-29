@@ -15,14 +15,18 @@ import useGameDetails from './useGameDetails';
 import { useStoreName } from './filters';
 import { coverCandidates } from './images';
 import { discountPercent } from './discount';
+import { normalize } from './genreFilter';
 import DiscountBadge from '../../components/DiscountBadge';
 import ControllerBadge from '../../components/ControllerBadge';
 
 type Props = {
     game: Game;
+    /** Si se pasan, los chips de genero filtran en vez de ser solo texto. */
+    selectedGenres?: string[];
+    onGenreToggle?: (genre: string) => void;
 };
 
-export default function GameCard({ game }: Props) {
+export default function GameCard({ game, selectedGenres, onGenreToggle }: Props) {
     const { data: details, isPending: areDetailsPending } = useGameDetails(game.steamAppID);
     const storeName = useStoreName();
     const descriptionColor = useColorModeValue('gray.600', 'gray.400');
@@ -31,8 +35,7 @@ export default function GameCard({ game }: Props) {
     const description = details?.description ?? null;
     const discount = discountPercent(game);
 
-    // Las portadas se resuelven en el cliente: no se puede saber de antemano si
-    // header.jpg existe, asi que se avanza por la lista cuando una falla.
+// Se resuelve en el cliente: no se puede saber de antemano si header.jpg existe.
     const { steamAppID, thumb } = game;
     const candidates = useMemo(
         () => coverCandidates({ steamAppID, thumb }),
@@ -146,18 +149,40 @@ export default function GameCard({ game }: Props) {
                     )}
                     {details?.genres.length ? (
                         <HStack spacing={2} flexWrap={'wrap'}>
-                            {details.genres.slice(0, 3).map((genero) => (
-                                <Text
-                                    key={genero}
-                                    fontSize={'xs'}
-                                    color={mutedGenreColor}
-                                    bg={genreBg}
-                                    px={2}
-                                    py={0.5}
-                                    rounded={'full'}>
-                                    {genero}
-                                </Text>
-                            ))}
+                            {details.genres.slice(0, 3).map((genero) => {
+                                const genreKey = normalize(genero);
+                                const isActive =
+                                    selectedGenres?.some(
+                                        (genre) => normalize(genre) === genreKey
+                                    ) ?? false;
+
+                                return (
+                                    <Text
+                                        as={onGenreToggle ? 'button' : 'span'}
+                                        key={genero}
+                                        onClick={
+                                            onGenreToggle
+                                                ? (event) => {
+                                                      event.stopPropagation();
+                                                      onGenreToggle(genero);
+                                                  }
+                                                : undefined
+                                        }
+                                        cursor={onGenreToggle ? 'pointer' : 'default'}
+                                        fontSize={'xs'}
+                                        fontWeight={isActive ? 700 : 500}
+                                        color={
+                                            isActive ? 'green.600' : mutedGenreColor
+                                        }
+                                        bg={isActive ? 'green.100' : genreBg}
+                                        _hover={onGenreToggle ? { opacity: 0.8 } : undefined}
+                                        px={2}
+                                        py={0.5}
+                                        rounded={'full'}>
+                                        {genero}
+                                    </Text>
+                                );
+                            })}
                         </HStack>
                     ) : null}
                     <Text color={'gray.500'} fontSize={'sm'}>

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { normalize } from './genreFilter';
 
 const STORES_API = 'https://www.cheapshark.com/api/1.0/stores';
 
@@ -25,6 +26,7 @@ export type GameFilters = {
   onSale: boolean;
   aaa: boolean;
   steamworks: boolean;
+  genres: string[];
 };
 
 export const DEFAULT_FILTERS: GameFilters = {
@@ -34,6 +36,7 @@ export const DEFAULT_FILTERS: GameFilters = {
   onSale: false,
   aaa: false,
   steamworks: false,
+  genres: [],
 };
 
 const SORT_VALUES: readonly string[] = SORT_OPTIONS.map((option) => option.value);
@@ -48,6 +51,7 @@ export function filtersToParams(filters: GameFilters): URLSearchParams {
   if (filters.onSale) params.set('onSale', '1');
   if (filters.aaa) params.set('aaa', '1');
   if (filters.steamworks) params.set('steamworks', '1');
+  if (filters.genres.length) params.set('genres', filters.genres.join(','));
   return params;
 }
 
@@ -73,7 +77,26 @@ export function paramsToFilters(params: URLSearchParams): GameFilters {
     onSale: params.get('onSale') === '1',
     aaa: params.get('aaa') === '1',
     steamworks: params.get('steamworks') === '1',
+    genres: parseGenres(params.get('genres')),
   };
+}
+
+/** Los generos de Steam traen tildes ("Acción"), asi que separarlos por coma y
+ *  decodificarlos es obligatorio: sin esto la URL rompe los acentos. Se
+ *  deduplica por forma normalizada para que "accion" y "Acción" no se acumulen. */
+function parseGenres(raw: string | null): string[] {
+  if (!raw) return [];
+  const genres = raw
+    .split(',')
+    .map((genre) => genre.trim())
+    .filter(Boolean);
+  const seen = new Set<string>();
+  return genres.filter((genre) => {
+    const key = normalize(genre);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export function filtersToQuery(filters: GameFilters): string {
@@ -92,6 +115,7 @@ export function countActiveFilters(filters: GameFilters): number {
   if (filters.onSale) count += 1;
   if (filters.aaa) count += 1;
   if (filters.steamworks) count += 1;
+  if (filters.genres.length) count += 1;
   return count;
 }
 
